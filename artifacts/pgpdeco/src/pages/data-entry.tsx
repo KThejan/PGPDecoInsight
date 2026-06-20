@@ -33,14 +33,21 @@ export default function DataEntryPage() {
     operator2Id: "",
     targetQty: "0",
     actualQty: "0",
-    defectPercentage: "0",
+    defectQty: "0",
   });
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
 
+  const actualNum = parseFloat(form.actualQty) || 0;
+  const defectNum = parseFloat(form.defectQty) || 0;
+  const computedDefectRate = actualNum > 0 ? (defectNum / actualNum) * 100 : 0;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.machine) { toast({ title: "Please select a machine", variant: "destructive" }); return; }
+
+    const defectPercentage = actualNum > 0 ? (defectNum / actualNum) * 100 : 0;
+
     createRecord.mutate({
       data: {
         date: form.date,
@@ -51,14 +58,14 @@ export default function DataEntryPage() {
         operator2Id: form.operator2Id ? parseInt(form.operator2Id) : null,
         targetQty: parseInt(form.targetQty) || 0,
         actualQty: parseInt(form.actualQty) || 0,
-        defectPercentage: parseFloat(form.defectPercentage) || 0,
+        defectPercentage,
       }
     }, {
       onSuccess: () => {
         toast({ title: "Record saved successfully" });
         qc.invalidateQueries({ queryKey: getListRecordsQueryKey() });
         qc.invalidateQueries({ queryKey: getGetDashboardStatsQueryKey() });
-        setForm({ date: today(), shift: "Morning", shiftGroup: "A", machine: "", operator1Id: "", operator2Id: "", targetQty: "0", actualQty: "0", defectPercentage: "0" });
+        setForm({ date: today(), shift: "Morning", shiftGroup: "A", machine: "", operator1Id: "", operator2Id: "", targetQty: "0", actualQty: "0", defectQty: "0" });
       },
       onError: () => toast({ title: "Failed to save record", variant: "destructive" }),
     });
@@ -137,9 +144,17 @@ export default function DataEntryPage() {
               <Input data-testid="input-actual" type="number" min="0" value={form.actualQty} onChange={e => set("actualQty", e.target.value)} />
             </div>
             <div>
-              <Label className="text-xs text-muted-foreground mb-1.5 block">Total Defect %</Label>
-              <Input data-testid="input-defects" type="number" min="0" max="100" step="0.01" value={form.defectPercentage} onChange={e => set("defectPercentage", e.target.value)} />
+              <Label className="text-xs text-muted-foreground mb-1.5 block">Defect Qty</Label>
+              <Input data-testid="input-defects" type="number" min="0" value={form.defectQty} onChange={e => set("defectQty", e.target.value)} />
             </div>
+          </div>
+
+          {/* Auto-computed defect rate preview */}
+          <div className="bg-secondary/50 rounded-lg px-4 py-3 flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Auto-calculated Defect Rate</span>
+            <span className={`font-mono text-sm font-semibold ${computedDefectRate > 0 ? "text-red-400" : "text-muted-foreground"}`}>
+              {computedDefectRate.toFixed(3)}%
+            </span>
           </div>
 
           <Button type="submit" data-testid="button-save-record" disabled={createRecord.isPending} className="w-full">

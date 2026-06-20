@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,16 +19,11 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },
 });
 
-function AuthGuard({ children }: { children: React.ReactNode }) {
-  const [location, setLocation] = useLocation();
-  const { data: user, isLoading } = useGetMe({ query: { retry: false, queryKey: ["auth", "me"] } });
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (!user && location !== "/") setLocation("/");
-      if (user && location === "/") setLocation("/dashboard");
-    }
-  }, [user, isLoading, location, setLocation]);
+function RequireAuth({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  const { data: user, isLoading } = useGetMe({
+    query: { retry: false, queryKey: ["auth", "me"] },
+  });
 
   if (isLoading) {
     return (
@@ -38,38 +33,40 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
+  if (!user) {
+    return <Redirect to={`/login?from=${encodeURIComponent(location)}`} />;
+  }
+
   return <>{children}</>;
 }
 
 function Router() {
   return (
-    <AuthGuard>
-      <Switch>
-        <Route path="/" component={LoginPage} />
-        <Route path="/dashboard">
-          <Layout><DashboardPage /></Layout>
-        </Route>
-        <Route path="/data-entry">
-          <Layout><DataEntryPage /></Layout>
-        </Route>
-        <Route path="/operator-ranking">
-          <Layout><OperatorRankingPage /></Layout>
-        </Route>
-        <Route path="/shift-ranking">
-          <Layout><ShiftRankingPage /></Layout>
-        </Route>
-        <Route path="/records">
-          <Layout><RecordsPage /></Layout>
-        </Route>
-        <Route path="/operators">
-          <Layout><OperatorsPage /></Layout>
-        </Route>
-        <Route path="/settings">
-          <Layout><SettingsPage /></Layout>
-        </Route>
-        <Route component={NotFound} />
-      </Switch>
-    </AuthGuard>
+    <Switch>
+      <Route path="/">
+        <Layout><DashboardPage /></Layout>
+      </Route>
+      <Route path="/login" component={LoginPage} />
+      <Route path="/operator-ranking">
+        <Layout><OperatorRankingPage /></Layout>
+      </Route>
+      <Route path="/shift-ranking">
+        <Layout><ShiftRankingPage /></Layout>
+      </Route>
+      <Route path="/data-entry">
+        <RequireAuth><Layout><DataEntryPage /></Layout></RequireAuth>
+      </Route>
+      <Route path="/records">
+        <RequireAuth><Layout><RecordsPage /></Layout></RequireAuth>
+      </Route>
+      <Route path="/operators">
+        <RequireAuth><Layout><OperatorsPage /></Layout></RequireAuth>
+      </Route>
+      <Route path="/settings">
+        <RequireAuth><Layout><SettingsPage /></Layout></RequireAuth>
+      </Route>
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 

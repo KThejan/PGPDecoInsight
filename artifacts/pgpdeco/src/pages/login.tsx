@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useLogin, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Factory, Lock, User } from "lucide-react";
+import { Lock, User, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,14 +11,18 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const qc = useQueryClient();
+
+  const params = new URLSearchParams(location.split("?")[1] ?? "");
+  const from = params.get("from") ?? "/";
 
   const login = useLogin({
     mutation: {
       onSuccess: (user) => {
         qc.setQueryData(getGetMeQueryKey(), user);
-        setLocation("/dashboard");
+        qc.setQueryData(["auth", "me"], user);
+        setLocation(from);
       },
       onError: () => {
         setError("Invalid credentials. Please try again.");
@@ -37,8 +41,8 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
-            <Factory className="h-8 w-8 text-primary" />
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <img src="/pgp-logo.png" alt="PGP Glass" className="h-20 w-auto object-contain" />
           </div>
           <h1 className="font-mono font-bold text-2xl tracking-widest text-foreground">PGPDECO</h1>
           <p className="text-sm text-muted-foreground mt-1">Glass Bottle Printing Performance</p>
@@ -46,7 +50,7 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-card border border-card-border rounded-xl p-6 shadow-lg">
-          <h2 className="text-base font-semibold text-foreground mb-5">Sign in to your account</h2>
+          <h2 className="text-base font-semibold text-foreground mb-5">Admin Sign In</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
@@ -96,6 +100,13 @@ export default function LoginPage() {
               {login.isPending ? "Signing in..." : "Sign In"}
             </Button>
           </form>
+        </div>
+
+        <div className="mt-4 text-center">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to Dashboard
+          </Link>
         </div>
       </div>
     </div>
