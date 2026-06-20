@@ -52,7 +52,7 @@ export default function DashboardPage() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-foreground">Production Command Center</h1>
+        <h1 className="text-xl font-bold text-foreground">Printing Performance Dashboard</h1>
         <p className="text-sm text-muted-foreground mt-0.5">Performance summary for the selected period.</p>
       </div>
 
