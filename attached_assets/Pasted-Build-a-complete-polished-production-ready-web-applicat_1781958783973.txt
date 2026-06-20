@@ -1,0 +1,303 @@
+Build a complete, polished, production-ready web application named **PGPDeco** for managing and evaluating performance in a glass bottle printing department.
+
+The application should have a professional factory-style interface with the following main menu items:
+
+* Dashboard
+* Operator Ranking
+* Shift Ranking
+* Data Entry
+* Records
+* Operators
+* Settings
+
+Use the provided company logo throughout the application, including the login page and navigation bar.
+
+---
+
+# FACTORY DETAILS
+
+The factory has:
+
+**Machines**
+
+* Techno 5
+* Kammann
+
+**Shift Groups**
+
+* Shift A
+* Shift B
+* Shift C
+* Shift D
+
+**Production Time Shifts**
+
+* Morning (06:00–14:00)
+* Afternoon (14:00–22:00)
+* Night (22:00–06:00)
+
+Each production record represents one machine for one production shift.
+
+---
+
+# LOGIN
+
+The application must begin with a login page.
+
+Default credentials:
+
+Username:
+Admin
+
+Password:
+printing1234
+
+---
+
+# DASHBOARD
+
+Create a modern dashboard displaying factory performance.
+
+Include:
+
+* Total Production
+* Machine-wise Production Summary
+* Shift-wise Performance
+* Top 5 Operators
+
+For the Top 5 Operators:
+
+* Display first place with a Gold Medal
+* Display second place with a Silver Medal
+* Display third place with a Bronze Medal
+
+The dashboard must allow filtering using:
+
+* January
+* February
+* March
+* April
+* May
+* June
+* July
+* August
+* September
+* October
+* November
+* December
+* This Quarter
+* This Year
+* All Time
+
+Also include a custom date range selector so users can choose any period, for example:
+
+2026-05-24 to 2027-06-23
+
+All dashboard statistics, charts and rankings must update according to the selected period.
+
+---
+
+# DATA ENTRY
+
+Create an easy-to-use production entry form.
+
+Fields:
+
+* Date
+* Production Shift (Morning / Afternoon / Night)
+* Shift Group (A/B/C/D)
+* Machine
+* Operator 1
+* Operator 2
+* Target Quantity
+* Actual Quantity
+* Total Defect Percentage
+
+Important:
+
+Do NOT use Total Defects as a number.
+
+Only use Total Defect Percentage.
+
+Operator selection must allow choosing any operator regardless of their assigned shift.
+
+Example:
+
+A Shift operator may temporarily work in B Shift.
+
+The system must support this without restrictions.
+
+---
+
+# OPERATORS
+
+Create an Operator Management page.
+
+Admin should be able to:
+
+* Add Operator
+* Edit Operator
+* Delete Operator
+
+Do not include sample operator names.
+
+Operators will be maintained by the administrator.
+
+---
+
+# SHIFT RANKING
+
+Create a Shift Ranking page.
+
+Rank all four shifts using the same scoring engine.
+
+Display:
+
+Shift Name
+
+Executive Name
+
+Current executives:
+
+Shift A — Sasidu
+
+Shift B — Avishka
+
+Shift C — Sandun
+
+Shift D — Thejan
+
+The executive names must be editable from within the website.
+
+---
+
+# OPERATOR RANKING
+
+Display all operators ranked from highest score to lowest.
+
+Include:
+
+* Rank
+* Operator Name
+* Average Score
+* Machine
+* Total Production
+* Total Records
+
+Rankings must automatically update whenever production records or scoring settings change.
+
+---
+
+# RECORDS
+
+Create a Records page showing all production entries.
+
+Include:
+
+* Search
+* Filter
+* Edit Record
+* Delete Record
+
+The administrator should be able to modify or remove any production record.
+
+---
+
+# SETTINGS
+
+Create a Settings page named:
+
+"Settings / Score Configuration"
+
+This page should allow the administrator to configure the performance scoring engine.
+
+Settings must be separate for each machine.
+
+Machine selector:
+
+* Techno 5
+* Kammann
+
+Each machine must have editable values for:
+
+* Production Constant (PC)
+* Quality Constant (QC)
+* Defect Penalty Factor (K)
+* Production Weight (wp)
+* Quality Weight (wq)
+* Carry Bonus Factor (C)
+
+Include a Save button.
+
+Also include a live preview that immediately reflects how score calculations change when settings are modified.
+
+When settings are updated:
+
+* All operator rankings must automatically recalculate.
+* All shift rankings must automatically recalculate.
+* Dashboard values must update immediately.
+* Historical production records must also use the latest settings.
+
+No scores should be permanently stored.
+
+Scores must always be calculated dynamically using the current machine settings.
+
+---
+
+# SCORING ENGINE
+
+Replace the previous scoring formula entirely.
+
+Use the following calculation model:
+
+Production Score:
+
+P = (Actual ÷ Target) × PC
+
+Quality Score:
+
+Q = QC − ((Defect Percentage ÷ 100) × K)
+
+Base Score:
+
+Base = (P × wp) + (Q × wq)
+
+Carry Bonus:
+
+Calculate the next shift production ratio:
+
+NSR = Next Shift Actual ÷ Next Shift Target
+
+Carry Bonus = max(0, (NSR − 1) × C)
+
+Final Score:
+
+Final Score = Base + Carry Bonus
+
+The scoring engine must work dynamically for every production record.
+
+---
+
+# GENERAL REQUIREMENTS
+
+The application should be clean, responsive and easy to use.
+
+Use a professional factory dashboard style.
+
+Navigation should be smooth and consistent.
+
+All rankings, dashboard statistics and reports must update instantly whenever production data or scoring settings change.
+
+The application should feel like a complete factory performance management system rather than a simple data entry program.
+
+The final web application must include exactly these menu items:
+
+* Dashboard
+* Operator Ranking
+* Shift Ranking
+* Data Entry
+* Records
+* Operators
+* Settings
+
+The project should be complete, polished and ready publish requiring additional feature development.

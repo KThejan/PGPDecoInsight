@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PGPDeco"
+version = "1.0.0"
+id = "artifacts/pgpdeco"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23286
+
+[services.development]
+run = "pnpm --filter @workspace/pgpdeco run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/pgpdeco", "run", "build" ]
+publicDir = "artifacts/pgpdeco/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23286"
+BASE_PATH = "/"
