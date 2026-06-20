@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  useGetShiftRankings, useListShiftExecutives, useUpdateShiftExecutive,
+  useGetShiftRankings, useListShiftExecutives, useUpdateShiftExecutive, useGetMe,
   getGetShiftRankingsQueryKey, getListShiftExecutivesQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,6 +29,7 @@ function getDateRange(period: string) {
 export default function ShiftRankingPage() {
   const { toast } = useToast();
   const qc = useQueryClient();
+  const { data: user } = useGetMe({ query: { retry: false, queryKey: ["auth", "me"] } });
   const [period, setPeriod] = useState("All Time");
   const [editingShift, setEditingShift] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
@@ -137,7 +138,7 @@ export default function ShiftRankingPage() {
           <Users className="h-4 w-4 text-primary" />
           <span className="text-sm font-semibold text-foreground">Shift Executives</span>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">Click the pencil icon to update an executive name.</p>
+        {user && <p className="text-xs text-muted-foreground mb-4">Click the pencil icon to update an executive name.</p>}
         <div className="grid grid-cols-2 gap-3">
           {executives.map(exec => (
             <div key={exec.shiftGroup} className="flex items-center justify-between bg-secondary/50 rounded-lg px-4 py-3">
@@ -155,26 +156,28 @@ export default function ShiftRankingPage() {
                   <span className="text-sm font-medium text-foreground">{exec.executiveName}</span>
                 )}
               </div>
-              <div className="flex items-center gap-1">
-                {editingShift === exec.shiftGroup ? (
-                  <>
-                    <button data-testid={`button-save-exec-${exec.shiftGroup}`}
-                      onClick={() => handleSaveExec(exec.shiftGroup)}
-                      className="p-1 text-primary hover:text-primary/80">
-                      <Check className="h-3.5 w-3.5" />
+              {user && (
+                <div className="flex items-center gap-1">
+                  {editingShift === exec.shiftGroup ? (
+                    <>
+                      <button data-testid={`button-save-exec-${exec.shiftGroup}`}
+                        onClick={() => handleSaveExec(exec.shiftGroup)}
+                        className="p-1 text-primary hover:text-primary/80">
+                        <Check className="h-3.5 w-3.5" />
+                      </button>
+                      <button onClick={() => setEditingShift(null)} className="p-1 text-muted-foreground hover:text-foreground">
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </>
+                  ) : (
+                    <button data-testid={`button-edit-exec-${exec.shiftGroup}`}
+                      onClick={() => { setEditingShift(exec.shiftGroup); setEditName(exec.executiveName); }}
+                      className="p-1 text-muted-foreground hover:text-foreground">
+                      <Pencil className="h-3.5 w-3.5" />
                     </button>
-                    <button onClick={() => setEditingShift(null)} className="p-1 text-muted-foreground hover:text-foreground">
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  </>
-                ) : (
-                  <button data-testid={`button-edit-exec-${exec.shiftGroup}`}
-                    onClick={() => { setEditingShift(exec.shiftGroup); setEditName(exec.executiveName); }}
-                    className="p-1 text-muted-foreground hover:text-foreground">
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

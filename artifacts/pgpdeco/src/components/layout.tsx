@@ -45,10 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="px-3 py-4 border-b border-sidebar-border">
           <div className="flex items-center gap-2.5">
             <img src="/pgp-logo.png" alt="PGP Glass" className="h-10 w-auto object-contain flex-shrink-0" />
-            <div className="flex flex-col leading-tight">
-              <span className="font-mono font-bold text-sm tracking-widest text-foreground">PGPDECO</span>
-              <span className="text-xs text-muted-foreground leading-none">PGP Glass</span>
-            </div>
+            <span className="font-mono font-bold text-sm tracking-widest text-foreground">PGPDECO</span>
           </div>
         </div>
 
@@ -119,7 +116,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               className="flex items-center gap-2 w-full px-3 py-2 text-sm text-primary hover:text-primary/80 hover:bg-sidebar-accent rounded-md transition-colors"
             >
               <LogIn className="h-4 w-4" />
-              Admin Sign In
+              Sign In
             </Link>
           )}
         </div>
