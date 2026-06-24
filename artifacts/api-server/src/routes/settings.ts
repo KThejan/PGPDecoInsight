@@ -32,12 +32,12 @@ router.put("/settings/machines/:machine", async (req, res) => {
   if (existing[0]) {
     const updated = await db.update(machineSettingsTable)
       .set({
-        pc: String(pc),
-        qc: String(qc),
-        k: String(k),
-        wp: String(wp),
-        wq: String(wq),
-        c: String(c),
+        pc: parseFloat(pc),
+        qc: parseFloat(qc),
+        k: parseFloat(k),
+        wp: parseFloat(wp),
+        wq: parseFloat(wq),
+        c: parseFloat(c),
         updatedAt: new Date(),
       })
       .where(eq(machineSettingsTable.machine, machine))
@@ -45,7 +45,7 @@ router.put("/settings/machines/:machine", async (req, res) => {
     row = updated[0];
   } else {
     const inserted = await db.insert(machineSettingsTable)
-      .values({ machine, pc: String(pc), qc: String(qc), k: String(k), wp: String(wp), wq: String(wq), c: String(c) })
+      .values({ machine, pc: parseFloat(pc), qc: parseFloat(qc), k: parseFloat(k), wp: parseFloat(wp), wq: parseFloat(wq), c: parseFloat(c) })
       .returning();
     row = inserted[0];
   }

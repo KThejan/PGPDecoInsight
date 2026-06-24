@@ -1,10 +1,10 @@
-import { pgTable, serial, text, integer, numeric, timestamp, date } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text, real } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const recordsTable = pgTable("production_records", {
-  id: serial("id").primaryKey(),
-  date: date("date").notNull(),
+export const recordsTable = sqliteTable("production_records", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  date: text("date").notNull(),
   shift: text("shift").notNull(),
   shiftGroup: text("shift_group").notNull(),
   machine: text("machine").notNull(),
@@ -12,8 +12,8 @@ export const recordsTable = pgTable("production_records", {
   operator2Id: integer("operator2_id"),
   targetQty: integer("target_qty").notNull(),
   actualQty: integer("actual_qty").notNull(),
-  defectPercentage: numeric("defect_percentage", { precision: 8, scale: 4 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  defectPercentage: real("defect_percentage").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()).notNull(),
 });
 
 export const insertRecordSchema = createInsertSchema(recordsTable).omit({ id: true, createdAt: true });

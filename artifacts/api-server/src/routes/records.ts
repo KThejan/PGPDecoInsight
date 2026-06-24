@@ -50,7 +50,7 @@ router.post("/records", async (req, res) => {
     operator2Id: operator2Id ?? null,
     targetQty: parseInt(targetQty),
     actualQty: parseInt(actualQty),
-    defectPercentage: String(defectPercentage),
+    defectPercentage: parseFloat(defectPercentage),
   }).returning();
 
   const record = inserted[0];
@@ -79,7 +79,7 @@ router.patch("/records/:id", async (req, res) => {
   if (operator2Id !== undefined) updateFields.operator2Id = operator2Id;
   if (targetQty !== undefined) updateFields.targetQty = parseInt(targetQty);
   if (actualQty !== undefined) updateFields.actualQty = parseInt(actualQty);
-  if (defectPercentage !== undefined) updateFields.defectPercentage = String(defectPercentage);
+  if (defectPercentage !== undefined) updateFields.defectPercentage = parseFloat(String(defectPercentage));
 
   const updated = await db.update(recordsTable).set(updateFields).where(eq(recordsTable.id, id)).returning();
   if (!updated[0]) {
